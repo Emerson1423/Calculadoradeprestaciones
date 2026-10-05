@@ -763,7 +763,25 @@ const CAMPOS_DESCANSO = ["diaDescanso", "mesDescanso", "anioDescanso"];
 
 const NOMBRES_FECHA = { Inicio: "de ingreso", Fin: "de terminación", Vacacion: "de las últimas vacaciones" };
 const MENSAJE_FECHA = { Inicio: "error-fechaInicio", Fin: "error-fechaFin", Vacacion: "error-fechaVacacion" };
-const ANIO_MIN = 1950, ANIO_MAX = 2030;
+const ANTIGUEDAD_MAX_ANIOS = 50; // Ninguna fecha puede ser anterior a hoy menos esta cantidad de años
+
+/** Límites permitidos para las fechas de labores: desde hace ANTIGUEDAD_MAX_ANIOS años hasta hoy. */
+function limitesFecha() {
+    let ahora = new Date();
+    let hoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+    let minimo = new Date(hoy.getFullYear() - ANTIGUEDAD_MAX_ANIOS, hoy.getMonth(), hoy.getDate());
+    return { hoy, minimo };
+}
+
+// Los campos de año también reflejan el rango permitido (flechas y validación nativa del navegador).
+(function ajustarLimitesAnio() {
+    let l = limitesFecha();
+    ["anioInicio", "anioFin", "anioVacacion"].forEach(id => {
+        let campo = document.getElementById(id);
+        campo.min = l.minimo.getFullYear();
+        campo.max = l.hoy.getFullYear();
+    });
+})();
 const MENSAJES_FECHA_BASE = {};
 Object.keys(MENSAJE_FECHA).forEach(suf => MENSAJES_FECHA_BASE[suf] = document.getElementById(MENSAJE_FECHA[suf]).textContent);
 let marcasFecha = { Inicio: false, Fin: false, Vacacion: false };
@@ -806,11 +824,14 @@ function revisarFechas() {
     let usaVacacion = !document.getElementById("nuncaVacaciones").checked;
     let sufijos = usaVacacion ? ["Inicio", "Fin", "Vacacion"] : ["Inicio", "Fin"];
     let lec = {}, errores = {};
+    let { hoy, minimo } = limitesFecha();
     sufijos.forEach(suf => {
         let f = lec[suf] = leerFechaCampos(suf);
         if (!f.completa) return;
-        if (!f.valida) errores[suf] = `La fecha ${NOMBRES_FECHA[suf]} no existe en el calendario (por ejemplo, 31 de abril o 30 de febrero). Revise el día y el mes.`;
-        else if (f.anio < ANIO_MIN || f.anio > ANIO_MAX) errores[suf] = `El año de la fecha ${NOMBRES_FECHA[suf]} debe estar entre ${ANIO_MIN} y ${ANIO_MAX}.`;
+        if (f.anio < 1000) errores[suf] = `Escriba el año de la fecha ${NOMBRES_FECHA[suf]} con 4 dígitos (por ejemplo, 2015).`;
+        else if (!f.valida) errores[suf] = `La fecha ${NOMBRES_FECHA[suf]} no existe en el calendario (por ejemplo, 31 de abril o 30 de febrero). Revise el día y el mes.`;
+        else if (f.fecha > hoy) errores[suf] = `La fecha ${NOMBRES_FECHA[suf]} (${fechaLarga(f.fecha)}) no puede ser posterior a hoy (${fechaLarga(hoy)}).`;
+        else if (f.fecha < minimo) errores[suf] = `La fecha ${NOMBRES_FECHA[suf]} (${fechaLarga(f.fecha)}) es demasiado antigua: no puede ser anterior al ${fechaLarga(minimo)} (máximo ${ANTIGUEDAD_MAX_ANIOS} años de antigüedad).`;
     });
 
     let ini = lec.Inicio, fin = lec.Fin;
