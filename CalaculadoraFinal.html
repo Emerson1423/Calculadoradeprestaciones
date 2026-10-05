@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Prestaciones Laborales</title>
+<style>
+/* ==========================================================================
+   CSS Optimizado para Adultos Mayores (Punto Medio: Claro, Legible y Sobrio)
+   ========================================================================== */
+
+* { 
+  box-sizing: border-box; 
+}
+
+/* Reset y Base tipográfica */
+body { 
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; 
+  font-size: 20px; 
+  line-height: 1.6; 
+  max-width: 680px; 
+  margin: 0 auto; 
+  padding: 24px 18px 80px; 
+  color: #1e293b; 
+  background-color: #f4f6f8; 
+}
+
+h1 { 
+  font-size: 26px; 
+  margin-bottom: 6px; 
+  color: #0f172a;
+}
+
+p.subtitulo { 
+  color: #475569; 
+  margin-top: 0; 
+  margin-bottom: 28px; 
+  font-size: 18px;
+}
+
+/* Tarjetas por paso */
+.paso { 
+  background: #ffffff; 
+  border: 2px solid #cbd5e1; 
+  border-radius: 12px; 
+  padding: 24px; 
+  margin-bottom: 24px; 
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.paso-numero { 
+  display: inline-block; 
+  font-size: 16px; 
+  font-weight: 700; 
+  color: #ffffff; 
+  background: #1e40af; 
+  padding: 4px 14px; 
+  border-radius: 20px; 
+  margin-bottom: 12px; 
+}
+
+.paso h2 { 
+  font-size: 22px; 
+  margin: 8px 0 16px; 
+  color: #0f172a;
+}
+
+label { 
+  display: block; 
+  font-weight: 700; 
+  margin-top: 20px; 
+  margin-bottom: 8px; 
+  color: #0f172a;
+}
+
+.ayuda { 
+  font-weight: normal; 
+  font-size: 16px; 
+  color: #475569; 
+  display: block; 
+  margin-top: 4px; 
+  line-height: 1.5;
+}
+
+/* Entradas de texto, números y selección */
+input[type="number"], 
+input[type="text"], 
+input[type="time"], 
+select { 
+  width: 100%; 
+  padding: 14px; 
+  font-size: 20px; 
+  border: 2px solid #94a3b8; 
+  border-radius: 8px; 
+  background: #ffffff; 
+  color: #0f172a;
+}
+
+/* Estado de Foco (Keyboard / Touch Focus) */
+input:focus, select:focus { 
+  border-color: #1d4ed8; 
+  outline: 3px solid #93c5fd; 
+}
+
+/* Manejo de Errores */
+input.campo-error { 
+  border-color: #dc2626; 
+  background-color: #fef2f2; 
+}
+
+.mensaje-error { 
+  color: #991b1b; 
+  background-color: #fee2e2;
+  border-left: 4px solid #dc2626;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 16px; 
+  font-weight: 600; 
+  margin-top: 8px; 
+  display: none; 
+}
+
+/* Disposición de Fechas */
+.fila-fecha { 
+  display: flex; 
+  gap: 12px; 
+}
+
+.fila-fecha > div { 
+  flex: 1; 
+}
+
+.fila-fecha label { 
+  font-size: 16px; 
+  font-weight: 600; 
+  color: #475569; 
+}
+
+/* Opciones de Radio y Checkbox ampliadas */
+.opcion-radio { 
+  display: block; 
+  padding: 16px; 
+  border: 2px solid #cbd5e1; 
+  border-radius: 10px; 
+  margin-top: 12px; 
+  cursor: pointer; 
+  font-weight: 600; 
+  background-color: #ffffff;
+}
+
+.opcion-radio input { 
+  width: auto; 
+  margin-right: 12px; 
+  transform: scale(1.4); 
+}
+
+.opcion-radio.seleccionada { 
+  border-color: #1d4ed8; 
+  background-color: #eff6ff; 
+}
+
+.checkbox-linea { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+  margin-top: 12px; 
+  font-weight: normal; 
+}
+
+.checkbox-linea input { 
+  width: auto; 
+  transform: scale(1.5); 
+  flex-shrink: 0; 
+  cursor: pointer;
+}
+
+.checkbox-linea label { 
+  margin: 0; 
+  font-weight: 600; 
+  font-size: 19px;
+  cursor: pointer;
+}
+
+/* Bloques secundarios e ítems agregados */
+.sub-bloque { 
+  border-left: 4px solid #1d4ed8; 
+  padding-left: 16px; 
+  margin-top: 16px; 
+  background: #f8fafc; 
+  padding-top: 12px; 
+  padding-bottom: 8px; 
+  border-radius: 0 8px 8px 0; 
+}
+
+.turno-guardado { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  background: #eff6ff; 
+  border: 1px solid #bfdbfe; 
+  border-radius: 8px; 
+  padding: 12px 14px; 
+  margin-top: 10px; 
+  font-size: 17px; 
+  font-weight: 600;
+}
+
+.turno-guardado button { 
+  background: #dc2626; 
+  color: #ffffff; 
+  border: none; 
+  border-radius: 6px; 
+  padding: 8px 14px; 
+  font-size: 15px; 
+  font-weight: 700;
+  cursor: pointer; 
+}
+
+/* Botones de acción principal y secundaria */
+button.boton-secundario { 
+  width: 100%; 
+  padding: 14px; 
+  font-size: 18px; 
+  font-weight: 700; 
+  color: #1d4ed8; 
+  background-color: #eff6ff; 
+  border: 2px solid #1d4ed8; 
+  border-radius: 8px; 
+  margin-top: 14px; 
+  cursor: pointer; 
+}
+
+button#btnCalcular, button#btnPDF { 
+  width: 100%; 
+  padding: 20px; 
+  font-size: 21px; 
+  font-weight: 700; 
+  color: #ffffff; 
+  background-color: #1d4ed8; 
+  border: none; 
+  border-radius: 10px; 
+  margin-top: 12px; 
+  cursor: pointer; 
+  box-shadow: 0 4px 6px -1px rgba(29, 78, 216, 0.3);
+}
+
+button#btnPDF { 
+  background-color: #15803d; 
+  margin-top: 16px; 
+  box-shadow: 0 4px 6px -1px rgba(21, 128, 61, 0.3);
+}
+
+button:focus-visible {
+  outline: 4px solid #f59e0b;
+  outline-offset: 2px;
+}
+
+/* Resumen del Resultado */
+#resultado { 
+  margin-top: 28px; 
+  padding: 22px; 
+  background: #ffffff; 
+  border: 2px solid #cbd5e1; 
+  border-radius: 12px; 
+  display: none; 
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+#resultado h2 { 
+  margin-top: 0; 
+  font-size: 22px; 
+}
+
+.linea-resultado { 
+  display: flex; 
+  justify-content: space-between; 
+  padding: 10px 0; 
+  border-bottom: 1px solid #e2e8f0; 
+  font-size: 18px; 
+}
+
+.linea-total { 
+  display: flex; 
+  justify-content: space-between; 
+  padding-top: 16px; 
+  margin-top: 8px; 
+  border-top: 3px solid #0f172a; 
+  font-size: 21px; 
+  font-weight: 700; 
+}
+
+.linea-neto { 
+  display: flex; 
+  justify-content: space-between; 
+  padding-top: 12px; 
+  margin-top: 12px; 
+  border-top: 3px solid #15803d; 
+  font-size: 23px; 
+  font-weight: 700; 
+  color: #15803d; 
+}
+
+.seccion-titulo { 
+  font-weight: 700; 
+  margin-top: 22px; 
+  margin-bottom: 6px; 
+  font-size: 16px; 
+  color: #475569; 
+  text-transform: uppercase; 
+  letter-spacing: 0.5px;
+}
+
+.base-legal { 
+  font-size: 14px; 
+  color: #64748b; 
+  font-style: italic; 
+  margin-top: -2px; 
+  margin-bottom: 8px; 
+}
+
+/* Impresión / Exportación PDF */
+#comprobanteImprimible { display: none; }
+
+@media print {
+    @page { margin: 15mm; }
+    .paso, button, .subtitulo, #resultado, body > h1 { display: none !important; }
+    #comprobanteImprimible { display: block !important; font-family: Arial, sans-serif; color: #111; }
+    body { padding: 0; background: #fff; max-width: none; font-size: 14px; }
+    #comprobanteImprimible h1 { display: block; text-align: center; font-size: 20px; margin-bottom: 2px; }
+    #comprobanteImprimible .subtitulo-comp { text-align: center; color: #555; font-size: 13px; margin-bottom: 16px; border-bottom: 1px solid #999; padding-bottom: 12px; }
+    #comprobanteImprimible h3 { font-size: 15px; margin-top: 20px; margin-bottom: 8px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+    .datos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 24px; font-size: 14px; }
+    .datos-grid .etiqueta { color: #555; font-size: 12px; margin-top: 6px; }
+    .datos-grid .valor { font-weight: bold; }
+    table.tabla-comp { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 6px; }
+    table.tabla-comp th { text-align: left; background: #f0f0f0; padding: 8px; border-bottom: 2px solid #333; font-size: 13px; }
+    table.tabla-comp th.monto, table.tabla-comp td.monto { text-align: right; }
+    table.tabla-comp td { padding: 8px; border-bottom: 1px solid #eee; vertical-align: top; }
+    table.tabla-comp td.base-legal-td { color: #888; font-size: 12px; }
+    table.tabla-comp tr { page-break-inside: avoid; }
+    .fila-total td { font-weight: bold; border-top: 2px solid #333; border-bottom: none; padding-top: 10px; }
+    .fila-neto td { font-weight: bold; background: #e6f4ea; color: #16803c; font-size: 16px; }
+    .nota-gravado { font-size: 12px; color: #555; margin: 8px 0 2px; }
+    .letras-box { background: #f5f5f5; padding: 10px 12px; margin-top: 16px; font-size: 13px; }
+    .letras-box strong { display: block; margin-top: 4px; }
+    .firmas { display: flex; gap: 40px; margin-top: 50px; font-size: 13px; text-align: center; page-break-inside: avoid; }
+    .firmas > div { flex: 1; }
+    .linea-firma { border-top: 1px solid #333; margin-bottom: 6px; }
+    .advertencia-legal { font-size: 11px; color: #777; margin-top: 24px; border-top: 1px solid #ccc; padding-top: 10px; }
+}
+</style>
+
+</head>
+<body>
+
+<h1>Calculadora de Prestaciones Laborales</h1>
+<p class="subtitulo">Complete los datos con calma. No hay límite de tiempo.</p>
+
+<!-- PASO 1 -->
+<div class="paso">
+    <span class="paso-numero">Paso 1 de 5</span>
+    <h2>Datos del salario y antigüedad</h2>
+
+    <label for="ingresoMensual">¿Cuánto gana al mes? (en dólares)</label>
+    <input type="number" id="ingresoMensual" placeholder="Ejemplo: 400" step="0.01" min="0">
+    <div class="mensaje-error" id="error-ingresoMensual">Por favor escriba su salario mensual.</div>
+
+    <label for="sectorEconomico">¿En qué tipo de trabajo se desempeña?</label>
+    <select id="sectorEconomico">
+        <option value="agricola">Trabajo agrícola</option>
+        <option value="industria">Industria (fábrica)</option>
+        <option value="comercio" selected>Comercio o servicios (tienda, oficina, restaurante)</option>
+        <option value="maquila">Maquila textil</option>
+    </select>
+
+    <label>¿Cuándo empezó a trabajar ahí?</label>
+    <div class="fila-fecha">
+        <div><label for="diaInicio">Día</label><input type="number" id="diaInicio" placeholder="1-31" min="1" max="31"></div>
+        <div><label for="mesInicio">Mes</label><input type="number" id="mesInicio" placeholder="1-12" min="1" max="12"></div>
+        <div><label for="anioInicio">Año</label><input type="number" id="anioInicio" placeholder="Ej: 2006" min="1950" max="2026"></div>
+    </div>
+    <div class="mensaje-error" id="error-fechaInicio">Revise que el día, mes y año de inicio sean correctos.</div>
+
+    <label>¿Cuándo terminó (o terminará) de trabajar ahí?</label>
+    <div class="fila-fecha">
+        <div><label for="diaFin">Día</label><input type="number" id="diaFin" placeholder="1-31" min="1" max="31"></div>
+        <div><label for="mesFin">Mes</label><input type="number" id="mesFin" placeholder="1-12" min="1" max="12"></div>
+        <div><label for="anioFin">Año</label><input type="number" id="anioFin" placeholder="Ej: 2026" min="1950" max="2030"></div>
+    </div>
+    <div class="mensaje-error" id="error-fechaFin">Revise que el día, mes y año de finalización sean correctos.</div>
+</div>
+
+<!-- PASO 2 -->
+<div class="paso">
+    <span class="paso-numero">Paso 2 de 5</span>
+    <h2>Datos para el comprobante <span style="font-weight:normal; font-size:14px; color:#777;">(opcional)</span></h2>
+    <p class="ayuda">Solo se necesitan para que el PDF final tenga sus datos. El cálculo funciona igual sin llenar esto.</p>
+
+    <label for="nombreTrabajador">Nombre completo de la persona trabajadora</label>
+    <input type="text" id="nombreTrabajador" placeholder="Ej: Roberto Alfredo Aguilar Bonilla">
+
+    <label for="nombrePatrono">Nombre o razón social del patrono</label>
+    <input type="text" id="nombrePatrono" placeholder="Ej: Orion Software">
+
+    <label for="cargoDesempenado">Cargo desempeñado</label>
+    <input type="text" id="cargoDesempenado" placeholder="Ej: Ingeniero de Software">
+</div>
+
+
+
+<!-- PASO 3 -->
+ <div class="paso">
+    <span class="paso-numero">Paso 3 de 5</span>
+    <h2>¿Por qué terminó el trabajo?</h2>
+
+    <label class="opcion-radio" id="labelDespido">
+        <input type="radio" name="tipoCierre" value="Despido" checked onclick="marcarOpcion(this)">
+        Me despidieron sin una razón justa
+    </label>
+    <label class="opcion-radio" id="labelRenuncia">
+        <input type="radio" name="tipoCierre" value="Renuncia" onclick="marcarOpcion(this)">
+        Renuncié yo mismo/a, por mi propia decisión
+    </label>
+
+    <div id="bloqueRenuncia" class="sub-bloque" style="display:none;">
+        <label style="margin-top:0;">¿Le informó a su patrono que renunciaba, por escrito y con anticipación?</label>
+        <div class="checkbox-linea">
+            <input type="radio" name="informoPatrono" value="si" id="informoSi" checked onclick="toggleDetalleAviso()">
+            <label for="informoSi">Sí, le avisé por escrito</label>
+        </div>
+        <div class="checkbox-linea">
+            <input type="radio" name="informoPatrono" value="no" id="informoNo" onclick="toggleDetalleAviso()">
+            <label for="informoNo">No le avisé, o no fue por escrito</label>
+        </div>
+
+        <div id="bloqueDetalleAviso">
+            <label for="tipoCargo">¿Qué tipo de cargo tenía?</label>
+            <select id="tipoCargo">
+                <option value="general" selected>Empleado en general</option>
+                <option value="especial">Dirección, gerencia, jefatura, o trabajador especializado</option>
+            </select>
+
+            <label for="diasPreaviso">¿Con cuántos días de anticipación avisó?</label>
+            <input type="number" id="diasPreaviso" min="0" placeholder="Ejemplo: 15">
+
+            <p class="ayuda">Un empleado en general debe avisar con al menos 15 días de anticipación; dirección, gerencia o cargos especializados necesitan 30 días (Art. 2, D.L. 592). Si lleva menos de 2 años trabajando ahí, tampoco le corresponde esta compensación aunque haya avisado a tiempo.</p>
+        </div>
+
+        <p id="avisoSinPreaviso" class="ayuda" style="display:none; color:#b45309;">⚠ Como no le avisó a su patrono, la ley no le reconoce la compensación económica por renuncia (Art. 2, D.L. 592) — el resto de sus prestaciones (vacación, aguinaldo, horas extra) se calculan igual.</p>
+    </div>
+</div>
+
+<!-- PASO 4 -->
+<div class="paso">
+    <span class="paso-numero">Paso 4 de 5</span>
+    <h2>Sus últimas vacaciones</h2>
+    <p class="ayuda">Esto ayuda a saber si le corresponde vacación completa o solo una parte proporcional.</p>
+
+    <div class="checkbox-linea">
+        <input type="checkbox" id="nuncaVacaciones" onchange="toggleVacaciones()">
+        <label for="nuncaVacaciones">Nunca he tomado vacaciones en este trabajo</label>
+    </div>
+
+    <div id="bloqueFechaVacacion">
+        <label>¿Cuándo empezaron sus últimas vacaciones?</label>
+        <div class="fila-fecha">
+            <div><label for="diaVacacion">Día</label><input type="number" id="diaVacacion" placeholder="1-31" min="1" max="31"></div>
+            <div><label for="mesVacacion">Mes</label><input type="number" id="mesVacacion" placeholder="1-12" min="1" max="12"></div>
+            <div><label for="anioVacacion">Año</label><input type="number" id="anioVacacion" placeholder="Ej: 2024" min="1950" max="2026"></div>
+        </div>
+        <div class="mensaje-error" id="error-fechaVacacion">Revise la fecha — debe estar entre la fecha de ingreso y la fecha de terminación.</div>
+    </div>
+</div>
+
+<!-- PASO 5 -->
+<div class="paso">
+    <span class="paso-numero">Paso 5 de 5</span>
+    <h2>Horas extra y días especiales</h2>
+    <p class="ayuda">Si no trabajó horas extra ni días especiales, no marque ninguna casilla de abajo — puede dejarlo así y pasar directo a "Calcular mi liquidación".</p>
+
+    <label style="margin-top:0;">¿Tiene horas extra que trabajó y que NO le han pagado todavía?</label>
+    <p class="ayuda">Solo las que no le han pagado — no ponga las que ya cobró.</p>
+    <div class="checkbox-linea">
+        <input type="checkbox" id="tieneHorasExtra" onchange="toggleHorasExtra()">
+        <label for="tieneHorasExtra">Sí, tengo horas extra sin pagar</label>
+    </div>
+
+    <div id="bloqueHorasExtra" class="sub-bloque" style="display:none;">
+        <p class="ayuda">Agregue cada turno de horas extra: la fecha y la hora en que empezó y terminó. El sistema calcula solo si fue de día o de noche — usted no necesita saberlo.</p>
+
+        <div class="fila-fecha">
+            <div><label for="diaTurno">Día</label><input type="number" id="diaTurno" placeholder="1-31" min="1" max="31"></div>
+            <div><label for="mesTurno">Mes</label><input type="number" id="mesTurno" placeholder="1-12" min="1" max="12"></div>
+            <div><label for="anioTurno">Año</label><input type="number" id="anioTurno" placeholder="Ej: 2026" min="1950" max="2030"></div>
+        </div>
+        <div class="fila-fecha">
+            <div><label for="horaInicioTurno">Empezó a las</label><input type="time" id="horaInicioTurno"></div>
+            <div><label for="horaFinTurno">Terminó a las</label><input type="time" id="horaFinTurno"></div>
+        </div>
+        <button type="button" class="boton-secundario" onclick="agregarTurno()">+ Agregar este turno</button>
+        <div id="listaTurnos"></div>
+    </div>
+
+    <label>¿Trabajó algún día festivo (asueto)?</label>
+    <div class="checkbox-linea">
+        <input type="checkbox" id="trabajoAsueto" onchange="toggleAsueto()">
+        <label for="trabajoAsueto">Sí, trabajé uno o más días festivos</label>
+    </div>
+    <div id="bloqueAsueto" class="sub-bloque" style="display:none;">
+        <p class="ayuda">Agregue cada vez que trabajó un día festivo, eligiéndolo de la lista y el año en que ocurrió:</p>
+        <label for="nombreAsueto">Día festivo</label>
+        <select id="nombreAsueto">
+            <option value="0">1 de enero (Año Nuevo)</option>
+            <option value="semana_santa">Jueves, viernes o sábado de Semana Santa</option>
+            <option value="1">1 de mayo (Día del Trabajo)</option>
+            <option value="2">10 de mayo (Día de las Madres)</option>
+            <option value="3">17 de junio (Día del Padre)</option>
+            <option value="4">6 de agosto (Divino Salvador del Mundo)</option>
+            <option value="5">21 de noviembre (Fiestas patronales de San Miguel)</option>
+            <option value="6">15 de septiembre (Independencia)</option>
+            <option value="7">2 de noviembre (Día de los Difuntos)</option>
+            <option value="8">25 de diciembre (Navidad)</option>
+        </select>
+        <label for="anioAsueto">Año en que lo trabajó</label>
+        <input type="number" id="anioAsueto" placeholder="Ej: 2020" min="1950" max="2030">
+        <button type="button" class="boton-secundario" onclick="agregarAsueto()">+ Agregar este día</button>
+        <div id="listaAsuetos"></div>
+    </div>
+
+    <label>Días de descanso semanal (su día libre) que trabajó</label>
+    <p class="ayuda">Agregue la fecha exacta de cada día libre que trabajó. Si coincide con un asueto ya agregado arriba, el sistema lo detecta solo y no se lo cuenta doble (Art. 194 CT).</p>
+    <div class="fila-fecha">
+        <div><label for="diaDescanso">Día</label><input type="number" id="diaDescanso" placeholder="1-31" min="1" max="31"></div>
+        <div><label for="mesDescanso">Mes</label><input type="number" id="mesDescanso" placeholder="1-12" min="1" max="12"></div>
+        <div><label for="anioDescanso">Año</label><input type="number" id="anioDescanso" placeholder="Ej: 2026" min="1950" max="2030"></div>
+    </div>
+    <button type="button" class="boton-secundario" onclick="agregarDescanso()">+ Agregar esta fecha</button>
+    <div id="listaDescansos"></div>
+</div>
+
+
+
+<button id="btnCalcular" onclick="calcular()">Calcular mi liquidación</button>
+
+<div id="resultado"></div>
+
+<!-- Contenido que se imprime / exporta a PDF -->
+<div id="comprobanteImprimible"></div>
+
+<script>
+const SALARIOS_MINIMOS = { agricola: 305.23, industria: 408.80, comercio: 408.80, maquila: 402.32 };
+const FECHA_CORTE_AGUINALDO = new Date(2026, 9, 1); // 1 de octubre de 2026
+let turnos = [];
+
+function marcarOpcion(radio) {
+    document.getElementById("labelDespido").classList.remove("seleccionada");
+    document.getElementById("labelRenuncia").classList.remove("seleccionada");
+    document.getElementById(radio.value === "Despido" ? "labelDespido" : "labelRenuncia").classList.add("seleccionada");
+    document.getElementById("bloqueRenuncia").style.display = radio.value === "Renuncia" ? "block" : "none";
+}
+marcarOpcion(document.querySelector('input[name="tipoCierre"]:checked'));
+
+function toggleDetalleAviso() {
+    let siAviso = document.getElementById("informoSi").checked;
+    document.getElementById("bloqueDetalleAviso").style.display = siAviso ? "block" : "none";
+    document.getElementById("avisoSinPreaviso").style.display = siAviso ? "none" : "block";
+}
+
+function toggleVacaciones() {
+    document.getElementById("bloqueFechaVacacion").style.display = document.getElementById("nuncaVacaciones").checked ? "none" : "block";
+}
+function toggleHorasExtra() {
+    document.getElementById("bloqueHorasExtra").style.display = document.getElementById("tieneHorasExtra").checked ? "block" : "none";
+}
+function toggleAsueto() {
+    document.getElementById("bloqueAsueto").style.display = document.getElementById("trabajoAsueto").checked ? "block" : "none";
+}
+
+function mostrarError(idCampo, idError, mostrar) {
+    document.getElementById(idCampo).classList.toggle("campo-error", mostrar);
+    document.getElementById(idError).style.display = mostrar ? "block" : "none";
+}
+
+function validarFecha(dia, mes, anio) {
+    if (!dia || !mes || !anio) return false;
+    let f = new Date(anio, mes - 1, dia);
+    return f.getFullYear() == anio && f.getMonth() == mes - 1 && f.getDate() == dia;
+}
+
+/** Lee las fechas de ingreso/fin del Paso 1, si ya están llenas y son válidas. */
+function obtenerRangoEmpleo() {
+    let diaI = parseInt(document.getElementById("diaInicio").value);
+    let mesI = parseInt(document.getElementById("mesInicio").value);
+    let anioI = parseInt(document.getElementById("anioInicio").value);
+    let diaF = parseInt(document.getElementById("diaFin").value);
+    let mesF = parseInt(document.getElementById("mesFin").value);
+    let anioF = parseInt(document.getElementById("anioFin").value);
+    if (!validarFecha(diaI, mesI, anioI) || !validarFecha(diaF, mesF, anioF)) return null;
+    return { inicio: new Date(anioI, mesI - 1, diaI), fin: new Date(anioF, mesF - 1, diaF) };
+}
+
+/** True si la fecha cae fuera del periodo de empleo. Si el periodo aún no está lleno, no bloquea. */
+function fechaFueraDeEmpleo(fecha) {
+    let rango = obtenerRangoEmpleo();
+    if (!rango || !fecha) return false;
+    return fecha < rango.inicio || fecha > rango.fin;
+}
+
+// Mes (0-indexado) y día de cada asueto de fecha fija. El índice coincide con el value del <select>.
+const ASUETOS_FIJOS = [
+    { nombre: "Año Nuevo", mes: 0, dia: 1 },
+    { nombre: "Día del Trabajo", mes: 4, dia: 1 },
+    { nombre: "Día de las Madres", mes: 4, dia: 10 },
+    { nombre: "Día del Padre", mes: 5, dia: 17 },
+    { nombre: "Divino Salvador del Mundo", mes: 7, dia: 6 },
+    { nombre: "Fiestas patronales de San Miguel", mes: 10, dia: 21 },
+    { nombre: "Independencia", mes: 8, dia: 15 },
+    { nombre: "Día de los Difuntos", mes: 10, dia: 2 },
+    { nombre: "Navidad", mes: 11, dia: 25 }
+];
+let asuetosTrabajados = []; // { nombre, fecha: Date|null (null = Semana Santa) }
+
+function agregarAsueto() {
+    let valor = document.getElementById("nombreAsueto").value;
+    let anio = parseInt(document.getElementById("anioAsueto").value);
+    if (!anio) { alert("Escriba el año en que trabajó ese día festivo."); return; }
+    let entrada;
+    if (valor === "semana_santa") {
+        entrada = { nombre: "Semana Santa " + anio, fecha: null };
+    } else {
+        let info = ASUETOS_FIJOS[parseInt(valor)];
+        entrada = { nombre: info.nombre + " " + anio, fecha: new Date(anio, info.mes, info.dia) };
+    }
+    if (fechaFueraDeEmpleo(entrada.fecha)) {
+        alert("Esa fecha cae fuera del periodo que trabajó ahí (entre su fecha de ingreso y de terminación del Paso 1). Revise el año que escribió.");
+        return;
+    }
+    asuetosTrabajados.push(entrada);
+    renderAsuetos();
+    document.getElementById("anioAsueto").value = "";
+}
+function quitarAsueto(i) { asuetosTrabajados.splice(i, 1); renderAsuetos(); }
+function renderAsuetos() {
+    let cont = document.getElementById("listaAsuetos");
+    cont.innerHTML = "";
+    asuetosTrabajados.forEach((a, i) => {
+        let div = document.createElement("div");
+        div.className = "turno-guardado";
+        div.innerHTML = `<span>${a.nombre}</span><button type="button" onclick="quitarAsueto(${i})">Quitar</button>`;
+        cont.appendChild(div);
+    });
+}
+
+let descansosTrabajados = []; // { fecha: Date }
+
+function agregarDescanso() {
+    let dia = parseInt(document.getElementById("diaDescanso").value);
+    let mes = parseInt(document.getElementById("mesDescanso").value);
+    let anio = parseInt(document.getElementById("anioDescanso").value);
+    if (!validarFecha(dia, mes, anio)) { alert("Revise la fecha antes de agregarla."); return; }
+    let fechaNueva = new Date(anio, mes - 1, dia);
+    if (fechaFueraDeEmpleo(fechaNueva)) {
+        alert("Esa fecha cae fuera del periodo que trabajó ahí (entre su fecha de ingreso y de terminación del Paso 1). Revise la fecha.");
+        return;
+    }
+    descansosTrabajados.push({ fecha: fechaNueva });
+    renderDescansos();
+    document.getElementById("diaDescanso").value = "";
+    document.getElementById("mesDescanso").value = "";
+    document.getElementById("anioDescanso").value = "";
+}
+function quitarDescanso(i) { descansosTrabajados.splice(i, 1); renderDescansos(); }
+function renderDescansos() {
+    let cont = document.getElementById("listaDescansos");
+    cont.innerHTML = "";
+    descansosTrabajados.forEach((d, i) => {
+        let div = document.createElement("div");
+        div.className = "turno-guardado";
+        div.innerHTML = `<span>${d.fecha.toLocaleDateString("es-SV")}</span><button type="button" onclick="quitarDescanso(${i})">Quitar</button>`;
+        cont.appendChild(div);
+    });
+}
+
+/** Agrega un turno de horas extra. Si la hora de fin es menor o igual a la de inicio, se asume que cruza la medianoche. */
+function agregarTurno() {
+    let dia = parseInt(document.getElementById("diaTurno").value);
+    let mes = parseInt(document.getElementById("mesTurno").value);
+    let anio = parseInt(document.getElementById("anioTurno").value);
+    let horaInicio = document.getElementById("horaInicioTurno").value;
+    let horaFin = document.getElementById("horaFinTurno").value;
+
+    if (!validarFecha(dia, mes, anio) || !horaInicio || !horaFin) {
+        alert("Revise la fecha y las horas del turno antes de agregarlo.");
+        return;
+    }
+    let [hI, mI] = horaInicio.split(":").map(Number);
+    let [hF, mF] = horaFin.split(":").map(Number);
+    let inicio = new Date(anio, mes - 1, dia, hI, mI);
+    let fin = new Date(anio, mes - 1, dia, hF, mF);
+    if (fin <= inicio) fin.setDate(fin.getDate() + 1);
+
+    if (fechaFueraDeEmpleo(inicio)) {
+        alert("Esa fecha cae fuera del periodo que trabajó ahí (entre su fecha de ingreso y de terminación del Paso 1). Revise la fecha del turno.");
+        return;
+    }
+
+    turnos.push({ inicio, fin });
+    renderTurnos();
+    ["diaTurno", "mesTurno", "anioTurno", "horaInicioTurno", "horaFinTurno"].forEach(id => document.getElementById(id).value = "");
+}
+function quitarTurno(i) { turnos.splice(i, 1); renderTurnos(); }
+function renderTurnos() {
+    let cont = document.getElementById("listaTurnos");
+    cont.innerHTML = "";
+    turnos.forEach((t, i) => {
+        let div = document.createElement("div");
+        div.className = "turno-guardado";
+        let opciones = { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" };
+        div.innerHTML = `<span>${t.inicio.toLocaleString("es-SV", opciones)} — ${t.fin.toLocaleString("es-SV", opciones)}</span>
+            <button type="button" onclick="quitarTurno(${i})">Quitar</button>`;
+        cont.appendChild(div);
+    });
+}
+
+/** Clasifica un turno en horas diurnas y nocturnas (Art. 161 CT: diurna 6:00–19:00, nocturna 19:00–6:00). */
+function clasificarTurno(inicio, fin) {
+    let minutos = Math.round((fin - inicio) / 60000);
+    let minutoInicioDelDia = inicio.getHours() * 60 + inicio.getMinutes();
+    let diurno = 0, nocturno = 0;
+    for (let i = 0; i < minutos; i++) {
+        let minutoDelDia = (minutoInicioDelDia + i) % 1440;
+        if (minutoDelDia >= 360 && minutoDelDia < 1140) diurno++; else nocturno++;
+    }
+    return { diurno: diurno / 60, nocturno: nocturno / 60 };
+}
+
+function calcularAntiguedad(fechaInicio, fechaFin) {
+    const msPorDia = 1000 * 60 * 60 * 24;
+    let años_Laborados = fechaFin.getFullYear() - fechaInicio.getFullYear();
+    let aniversarioEsteAño = new Date(fechaFin.getFullYear(), fechaInicio.getMonth(), fechaInicio.getDate());
+    if (fechaFin < aniversarioEsteAño) años_Laborados--;
+    let ultimoAniversario = new Date(fechaInicio);
+    ultimoAniversario.setFullYear(fechaInicio.getFullYear() + años_Laborados);
+    let dias_Año_Actual = Math.round((fechaFin - ultimoAniversario) / msPorDia);
+    let fraccion_Año_Actual = dias_Año_Actual / 360;
+    let dias_Laborados = (años_Laborados * 360) + dias_Año_Actual;
+    let fraccion_Años = dias_Laborados / 360;
+    return { años_Laborados, dias_Año_Actual, fraccion_Año_Actual, fraccion_Años };
+}
+
+function obtenerTramoAguinaldo(años_Laborados) {
+    if (años_Laborados < 3) return 15;
+    if (años_Laborados < 10) return 19;
+    return 21;
+}
+
+/** Aguinaldo completo (1) si fechaFin cae en o después de la reforma (1-oct-2026); si no, proporcional. */
+function calcularFraccionAguinaldo(fechaFin, fraccion_Año_Actual) {
+    return fechaFin >= FECHA_CORTE_AGUINALDO ? 1 : fraccion_Año_Actual;
+}
+
+/** Fracción de vacación según últimas vacaciones gozadas (o fecha de ingreso si nunca ha tomado). */
+function calcularFraccionVacacion(fechaBase, fechaFin) {
+    const msPorDia = 1000 * 60 * 60 * 24;
+    let dias = Math.round((fechaFin - fechaBase) / msPorDia);
+    if (dias >= 360) return 1;
+    return dias / 360;
+}
+
+/**
+ * Compensación por fin de contrato. Para renuncia valida (D.L. 592):
+ *  - Art. 8: mínimo 2 años de servicio continuo.
+ *  - Art. 2: preaviso mínimo (30 días dirección/gerencia/especializados, 15 días el resto) y aviso al patrono.
+ */
+function calcularCompensacionFinContrato(tipo_De_Cierre, informoPatrono, diasPreaviso, tipoCargo, ingreso_Mensual, salario_Minimo_Mensual, fraccion_Años) {
+    if (tipo_De_Cierre === "Renuncia") {
+        if (fraccion_Años < 2) {
+            return { monto: 0, bloqueado: true, motivo: "No cumple el mínimo de 2 años de servicio continuo que exige el Art. 8 del D.L. 592." };
+        }
+        if (!informoPatrono) {
+            return { monto: 0, bloqueado: true, motivo: "No informó a su patrono sobre la renuncia, por lo que no tiene derecho a esta compensación (Art. 2, D.L. 592)." };
+        }
+        let preavisoRequerido = tipoCargo === "especial" ? 30 : 15;
+        if ((diasPreaviso || 0) < preavisoRequerido) {
+            return { monto: 0, bloqueado: true, motivo: `Avisó con menos de los ${preavisoRequerido} días mínimos que exige el Art. 2 del D.L. 592 para su tipo de cargo.` };
+        }
+    }
+    let salario_Base, monto;
+    if (tipo_De_Cierre === "Despido") {
+        salario_Base = Math.min(ingreso_Mensual, 4 * salario_Minimo_Mensual);
+        monto = Math.max(salario_Base * fraccion_Años, salario_Base * 0.5);
+    } else {
+        salario_Base = Math.min(ingreso_Mensual, 2 * salario_Minimo_Mensual);
+        monto = salario_Base * 0.5 * fraccion_Años;
+    }
+    return { monto, bloqueado: false };
+}
+
+/** Línea de resultado con su monto y, debajo, el artículo que la respalda. */
+function filaConBase(etiqueta, monto, base) {
+    let montoTexto = monto < 0 ? `-$${Math.abs(monto).toFixed(2)}` : `$${monto.toFixed(2)}`;
+    return `<div class="linea-resultado"><span>${etiqueta}</span><span>${montoTexto}</span></div><div class="base-legal">${base}</div>`;
+}
+
+/* ================= COMPROBANTE DE LIQUIDACIÓN (PDF) ================= */
+
+function numeroALetras(n) {
+    const U = ["","UNO","DOS","TRES","CUATRO","CINCO","SEIS","SIETE","OCHO","NUEVE","DIEZ","ONCE","DOCE","TRECE","CATORCE","QUINCE","DIECISEIS","DIECISIETE","DIECIOCHO","DIECINUEVE","VEINTE","VEINTIUNO","VEINTIDOS","VEINTITRES","VEINTICUATRO","VEINTICINCO","VEINTISEIS","VEINTISIETE","VEINTIOCHO","VEINTINUEVE"];
+    const D = ["","","","TREINTA","CUARENTA","CINCUENTA","SESENTA","SETENTA","OCHENTA","NOVENTA"];
+    const C = ["","CIENTO","DOSCIENTOS","TRESCIENTOS","CUATROCIENTOS","QUINIENTOS","SEISCIENTOS","SETECIENTOS","OCHOCIENTOS","NOVECIENTOS"];
+    function menor1000(x) {
+        if (x === 100) return "CIEN";
+        let r = x % 100, t = C[Math.floor(x / 100)];
+        if (r < 30) return (t + " " + U[r]).trim();
+        let u = r % 10;
+        return (t + " " + D[Math.floor(r / 10)] + (u ? " Y " + U[u] : "")).trim();
+    }
+    function entero(x) {
+        if (x === 0) return "CERO";
+        let m = Math.floor(x / 1000000), k = Math.floor((x % 1000000) / 1000), r = x % 1000, s = [];
+        if (m) s.push(m === 1 ? "UN MILLON" : entero(m).replace(/UNO$/, "UN") + " MILLONES");
+        if (k) s.push(k === 1 ? "MIL" : menor1000(k).replace(/UNO$/, "UN") + " MIL");
+        if (r) s.push(menor1000(r));
+        return s.join(" ");
+    }
+    let total = Math.round(Math.abs(n) * 100);
+    let ent = Math.floor(total / 100), cts = String(total % 100).padStart(2, "0");
+    return `${entero(ent)} ${cts}/100 DOLARES DE LOS ESTADOS UNIDOS DE AMERICA`;
+}
+
+function antiguedadTexto(i, f) {
+    let m = (f.getFullYear() - i.getFullYear()) * 12 + (f.getMonth() - i.getMonth());
+    if (f.getDate() < i.getDate()) m--;
+    m = Math.max(m, 0);
+    let a = Math.floor(m / 12), r = m % 12;
+    return `${a} ${a === 1 ? "año" : "años"}, ${r} ${r === 1 ? "mes" : "meses"}`;
+}
+
+function fechaLarga(d) {
+    const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+    return `${String(d.getDate()).padStart(2, "0")} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
+}
+
+function dinero(v) {
+    let t = Math.abs(v).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return (v < 0 ? "-$" : "$") + t;
+}
+
+function esc(t) {
+    return String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function generarComprobante(d) {
+    const fila = (concepto, base, montoTxt) =>
+        `<tr><td>${concepto}</td><td class="base-legal-td">${base}</td><td class="monto">${montoTxt}</td></tr>`;
+
+    const esDespido = d.tipo_De_Cierre === "Despido";
+    const etiquetaInd = esDespido ? "Indemnización por despido injustificado" : "Compensación por renuncia voluntaria";
+    const baseInd = esDespido ? "Art. 58 CT" : "D.L. 592, Arts. 2, 4 y 8";
+    const causa = esDespido ? "Despido sin causa justificada" : "Renuncia voluntaria";
+
+    let filas = "";
+    filas += fila("Vacación", "Arts. 177 y 187 CT", dinero(d.vacacion_Proporcional));
+    filas += fila("Aguinaldo", "Arts. 196-198 CT", dinero(d.Aguinaldo_proporcional));
+    filas += d.resultadoCompensacion.bloqueado
+        ? fila(etiquetaInd, baseInd, "No corresponde")
+        : fila(etiquetaInd, baseInd, dinero(d.indemnizacion));
+    if (d.horas_Extra_Dia > 0)   filas += fila("Horas extra diurnas", "Art. 169 CT", dinero(d.horas_Extra_Dia));
+    if (d.horas_Extra_Noche > 0) filas += fila("Horas extra nocturnas", "Arts. 168 y 169 CT", dinero(d.horas_Extra_Noche));
+    if (d.asueto_Extra > 0)      filas += fila("Días de asueto laborados", "Art. 192 CT", dinero(d.asueto_Extra));
+    if (d.descanso_trabajado_extra > 0) filas += fila("Días de descanso semanal laborados", "Arts. 175 y 176 CT", dinero(d.descanso_trabajado_extra));
+
+    const exento = d.Aguinaldo_proporcional + d.indemnizacion;
+    const totalDeducciones = d.cotizacionISSS + d.cotizacionAFP;
+    const notaCompensacion = d.resultadoCompensacion.bloqueado
+        ? `<p class="nota-gravado">Nota: ${esc(d.resultadoCompensacion.motivo)}</p>` : "";
+    const datoOpcional = (etiqueta, valor) => valor
+        ? `<div class="etiqueta">${etiqueta}</div><div class="valor">${esc(valor)}</div>` : "";
+
+    document.getElementById("comprobanteImprimible").innerHTML = `
+        <h1>COMPROBANTE DE LIQUIDACIÓN DE PRESTACIONES LABORALES</h1>
+        <div class="subtitulo-comp">República de El Salvador</div>
+
+        <h3>I. Datos de las partes</h3>
+        <div class="datos-grid">
+            ${datoOpcional("Persona trabajadora", d.nombreTrabajador)}
+            ${datoOpcional("Patrono", d.nombrePatrono)}
+            ${datoOpcional("Cargo desempeñado", d.cargoDesempenado)}
+            <div class="etiqueta">Salario mensual</div><div class="valor">${dinero(d.ingreso_Mensual)}</div>
+            <div class="etiqueta">Fecha de ingreso</div><div class="valor">${fechaLarga(d.fechaInicio)}</div>
+            <div class="etiqueta">Fecha de terminación</div><div class="valor">${fechaLarga(d.fechaFin)}</div>
+            <div class="etiqueta">Antigüedad reconocida</div><div class="valor">${antiguedadTexto(d.fechaInicio, d.fechaFin)}</div>
+            <div class="etiqueta">Causa de terminación</div><div class="valor">${causa}</div>
+        </div>
+
+        <h3>II. Desglose de prestaciones liquidadas</h3>
+        <table class="tabla-comp">
+            <tr><th>Concepto</th><th>Base legal</th><th class="monto">Monto</th></tr>
+            ${filas}
+            <tr class="fila-total"><td>TOTAL DEVENGADO (BRUTO)</td><td></td><td class="monto">${dinero(d.total_Bruto)}</td></tr>
+        </table>
+        ${notaCompensacion}
+
+        <h3>III. Deducciones de ley y neto a pagar</h3>
+        <p class="nota-gravado">Remuneración gravada: ${dinero(d.baseGravada)}. Monto exento de cotizaciones: ${dinero(exento)} (indemnización y aguinaldo).</p>
+        <table class="tabla-comp">
+            <tr><th>Concepto</th><th>Base legal</th><th class="monto">Monto</th></tr>
+            ${fila("Cotización ISSS (trabajador)", "Reglamento del ISSS, Art. 29", dinero(-d.cotizacionISSS))}
+            ${fila("Cotización AFP (trabajador)", "Ley del Sistema de Ahorro para Pensiones", dinero(-d.cotizacionAFP))}
+            <tr class="fila-total"><td>Total de deducciones</td><td></td><td class="monto">${dinero(-totalDeducciones)}</td></tr>
+            <tr class="fila-neto"><td>MONTO NETO A PAGAR</td><td></td><td class="monto">${dinero(d.totalNeto)}</td></tr>
+        </table>
+
+        <div class="letras-box">Monto neto en letras<strong>${numeroALetras(d.totalNeto)}</strong></div>
+
+        <div class="firmas">
+            <div><div class="linea-firma"></div>Recibí conforme<br>${esc(d.nombreTrabajador || "Persona trabajadora")}</div>
+            <div><div class="linea-firma"></div>Por el patrono<br>${esc(d.nombrePatrono || "Patrono")}</div>
+        </div>
+
+        <div class="advertencia-legal">Emitido el ${fechaLarga(new Date())}. Documento de carácter informativo y referencial, generado por una calculadora. No sustituye la asesoría de un profesional ni la resolución de la autoridad laboral competente.</div>
+    `;
+}
+
+/* ================= CÁLCULO PRINCIPAL ================= */
+
+function calcular() {
+    let huboError = false;
+
+    let ingreso_Mensual = parseFloat(document.getElementById("ingresoMensual").value);
+    if (!ingreso_Mensual || ingreso_Mensual <= 0) {
+        mostrarError("ingresoMensual", "error-ingresoMensual", true); huboError = true;
+    } else { mostrarError("ingresoMensual", "error-ingresoMensual", false); }
+
+    let diaI = parseInt(document.getElementById("diaInicio").value);
+    let mesI = parseInt(document.getElementById("mesInicio").value);
+    let anioI = parseInt(document.getElementById("anioInicio").value);
+    let fechaInicioValida = validarFecha(diaI, mesI, anioI);
+    mostrarError("anioInicio", "error-fechaInicio", !fechaInicioValida);
+    if (!fechaInicioValida) huboError = true;
+
+    let diaF = parseInt(document.getElementById("diaFin").value);
+    let mesF = parseInt(document.getElementById("mesFin").value);
+    let anioF = parseInt(document.getElementById("anioFin").value);
+    let fechaFinValida = validarFecha(diaF, mesF, anioF);
+
+    // La fecha de fin debe ser posterior a la de inicio, o toda la antigüedad sale negativa.
+    if (fechaInicioValida && fechaFinValida) {
+        let posibleFin = new Date(anioF, mesF - 1, diaF);
+        let posibleInicio = new Date(anioI, mesI - 1, diaI);
+        if (posibleFin < posibleInicio) {
+            fechaFinValida = false;
+            document.getElementById("error-fechaFin").textContent = "La fecha de terminación debe ser posterior a la fecha de ingreso.";
+        } else {
+            document.getElementById("error-fechaFin").textContent = "Revise que el día, mes y año de finalización sean correctos.";
+        }
+    }
+    mostrarError("anioFin", "error-fechaFin", !fechaFinValida);
+    if (!fechaFinValida) huboError = true;
+
+    if (huboError) { document.getElementById("resultado").style.display = "none"; return; }
+
+    let fechaInicio = new Date(anioI, mesI - 1, diaI);
+    let fechaFin = new Date(anioF, mesF - 1, diaF);
+
+    let tipo_De_Cierre = document.querySelector('input[name="tipoCierre"]:checked').value;
+    let informoPatrono = document.getElementById("informoSi").checked;
+    let diasPreaviso = parseFloat(document.getElementById("diasPreaviso").value);
+    let tipoCargo = document.getElementById("tipoCargo").value;
+
+    // --- Antigüedad ---
+    let { años_Laborados, fraccion_Año_Actual, fraccion_Años } = calcularAntiguedad(fechaInicio, fechaFin);
+    let tramo_Vigente = obtenerTramoAguinaldo(años_Laborados);
+
+    let sectorEconomico = document.getElementById("sectorEconomico").value;
+    let salario_Minimo_Mensual = SALARIOS_MINIMOS[sectorEconomico];
+    let salario_Basico_Diario = ingreso_Mensual / 30;
+    let salario_Basico_Por_Hora = salario_Basico_Diario / 8;
+
+    // --- Vacación ---
+    // La fecha de las últimas vacaciones debe caer entre el ingreso y la terminación;
+    // si no, la resta de fechas da negativo y arruina el cálculo.
+    let nuncaVacaciones = document.getElementById("nuncaVacaciones").checked;
+    let fechaBaseVacacion = fechaInicio;
+    if (!nuncaVacaciones) {
+        let diaV = parseInt(document.getElementById("diaVacacion").value);
+        let mesV = parseInt(document.getElementById("mesVacacion").value);
+        let anioV = parseInt(document.getElementById("anioVacacion").value);
+        let fechaVacacionValida = validarFecha(diaV, mesV, anioV);
+        let fechaVac = fechaVacacionValida ? new Date(anioV, mesV - 1, diaV) : null;
+        let fechaVacacionEnRango = fechaVac && fechaVac >= fechaInicio && fechaVac <= fechaFin;
+        mostrarError("anioVacacion", "error-fechaVacacion", !fechaVacacionEnRango);
+        if (!fechaVacacionEnRango) {
+            document.getElementById("resultado").style.display = "none";
+            return;
+        }
+        fechaBaseVacacion = fechaVac;
+    } else {
+        mostrarError("anioVacacion", "error-fechaVacacion", false);
+    }
+    let fraccion_Vacacion = calcularFraccionVacacion(fechaBaseVacacion, fechaFin);
+    let vacacion_Proporcional = salario_Basico_Diario * 15 * 1.30 * fraccion_Vacacion;
+
+    // --- Aguinaldo ---
+    let fraccion_Aguinaldo = calcularFraccionAguinaldo(fechaFin, fraccion_Año_Actual);
+    let Aguinaldo_proporcional = salario_Basico_Diario * tramo_Vigente * fraccion_Aguinaldo;
+
+    // --- Indemnización / compensación ---
+    let resultadoCompensacion = calcularCompensacionFinContrato(tipo_De_Cierre, informoPatrono, diasPreaviso, tipoCargo, ingreso_Mensual, salario_Minimo_Mensual, fraccion_Años);
+    let indemnizacion = resultadoCompensacion.monto;
+
+    // --- Horas extra ---
+    let horas_Diurnas_Totales = 0, horas_Nocturnas_Totales = 0;
+    if (document.getElementById("tieneHorasExtra").checked) {
+        turnos.forEach(t => {
+            let c = clasificarTurno(t.inicio, t.fin);
+            horas_Diurnas_Totales += c.diurno;
+            horas_Nocturnas_Totales += c.nocturno;
+        });
+    }
+    let horas_Extra_Dia = salario_Basico_Por_Hora * 2 * horas_Diurnas_Totales;
+    let horas_Extra_Noche = salario_Basico_Por_Hora * 1.25 * 2 * horas_Nocturnas_Totales;
+
+    // --- Asuetos ---
+    let dias_Asueto_Laborados = document.getElementById("trabajoAsueto").checked ? asuetosTrabajados.length : 0;
+    let asueto_Extra = salario_Basico_Diario * 2 * dias_Asueto_Laborados;
+
+    // --- Descanso semanal (Art. 194 CT: si coincide con un asueto agregado, no se paga doble) ---
+    function mismaFecha(a, b) {
+        return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+    }
+    let fechasAsueto = document.getElementById("trabajoAsueto").checked
+        ? asuetosTrabajados.filter(a => a.fecha).map(a => a.fecha)
+        : [];
+    let descansosValidos = descansosTrabajados.filter(d => !fechasAsueto.some(fa => mismaFecha(fa, d.fecha)));
+    let asuetosEnDiaDescanso = descansosTrabajados.length - descansosValidos.length;
+    let dias_Descanso_Laborados = descansosValidos.length;
+    let descanso_trabajado_extra = salario_Basico_Diario * 1.5 * dias_Descanso_Laborados;
+
+    // --- Total bruto ---
+    let total_Bruto = vacacion_Proporcional + Aguinaldo_proporcional + indemnizacion
+        + horas_Extra_Dia + horas_Extra_Noche + asueto_Extra + descanso_trabajado_extra;
+
+    // --- Deducciones (AFP e ISSS, sin Renta). Gravado: vacación + horas extra + asueto + descanso ---
+    let baseGravada = vacacion_Proporcional + horas_Extra_Dia + horas_Extra_Noche + asueto_Extra + descanso_trabajado_extra;
+    let cotizacionISSS = Math.min(baseGravada, 1000) * 0.03;
+    let cotizacionAFP = baseGravada * 0.0725;
+    let totalNeto = total_Bruto - cotizacionISSS - cotizacionAFP;
+
+    let avisoDomingo = asuetosEnDiaDescanso > 0
+        ? `<p class="ayuda" style="color:#b45309;">⚠ ${asuetosEnDiaDescanso} fecha(s) que agregó en "descanso semanal" coincidía con un asueto ya registrado — se excluyó automáticamente de ese cálculo para no pagarla doble (Art. 194 CT); ya quedó cubierta al 100% en "Días festivos trabajados".</p>`
+        : "";
+
+    let etiquetaIndemnizacion = tipo_De_Cierre === "Despido" ? "Indemnización" : "Compensación por renuncia";
+    let baseIndemnizacion = tipo_De_Cierre === "Despido" ? "Art. 58 CT" : "D.L. 592, Arts. 2, 4 y 8";
+    let filaIndemnizacion = resultadoCompensacion.bloqueado
+        ? `<div class="linea-resultado"><span>${etiquetaIndemnizacion}</span><span>No corresponde</span></div><div class="base-legal">${baseIndemnizacion} — ${resultadoCompensacion.motivo}</div>`
+        : filaConBase(etiquetaIndemnizacion, indemnizacion, baseIndemnizacion);
+
+    let nombreTrabajador = document.getElementById("nombreTrabajador").value.trim();
+    let nombrePatrono = document.getElementById("nombrePatrono").value.trim();
+    let cargoDesempenado = document.getElementById("cargoDesempenado").value.trim();
+    let encabezadoComprobante = (nombreTrabajador || nombrePatrono || cargoDesempenado) ? `
+        <div class="seccion-titulo">Datos del comprobante</div>
+        ${nombreTrabajador ? `<div class="linea-resultado"><span>Persona trabajadora</span><span>${esc(nombreTrabajador)}</span></div>` : ""}
+        ${nombrePatrono ? `<div class="linea-resultado"><span>Patrono</span><span>${esc(nombrePatrono)}</span></div>` : ""}
+        ${cargoDesempenado ? `<div class="linea-resultado"><span>Cargo desempeñado</span><span>${esc(cargoDesempenado)}</span></div>` : ""}
+    ` : "";
+
+    document.getElementById("resultado").innerHTML = `
+        <h2>Su liquidación estimada</h2>
+        ${encabezadoComprobante}
+        <div class="linea-resultado"><span>Antigüedad</span><span>${antiguedadTexto(fechaInicio, fechaFin)}</span></div>
+        ${filaConBase(`Vacación (${fraccion_Vacacion >= 1 ? "completa" : "proporcional"})`, vacacion_Proporcional, "Arts. 177 y 187 CT")}
+        ${filaConBase(`Aguinaldo (${fraccion_Aguinaldo >= 1 ? "completo" : "proporcional"})`, Aguinaldo_proporcional, "Arts. 196–198 CT")}
+        ${filaIndemnizacion}
+        ${filaConBase(`Horas extra de día (${horas_Diurnas_Totales.toFixed(1)}h)`, horas_Extra_Dia, "Art. 169 CT")}
+        ${filaConBase(`Horas extra de noche (${horas_Nocturnas_Totales.toFixed(1)}h)`, horas_Extra_Noche, "Arts. 168 y 169 CT")}
+        ${filaConBase(`Días festivos trabajados (${dias_Asueto_Laborados})`, asueto_Extra, "Art. 192 CT")}
+        ${filaConBase("Descanso semanal trabajado", descanso_trabajado_extra, "Arts. 175 y 176 CT")}
+        ${avisoDomingo}
+        <div class="linea-total"><span>TOTAL BRUTO</span><span>$${total_Bruto.toFixed(2)}</span></div>
+
+        <div class="seccion-titulo">Deducciones de ley</div>
+        ${filaConBase("Cotización ISSS (3%, tope $1,000)", -cotizacionISSS, "Reglamento del ISSS, Art. 29")}
+        ${filaConBase("Cotización AFP (7.25%)", -cotizacionAFP, "Ley del Sistema de Ahorro para Pensiones")}
+        <div class="linea-neto"><span>TOTAL NETO A RECIBIR</span><span>$${totalNeto.toFixed(2)}</span></div>
+    `;
+    document.getElementById("resultado").style.display = "block";
+
+    // Contenido del PDF
+    generarComprobante({
+        nombreTrabajador, nombrePatrono, cargoDesempenado,
+        ingreso_Mensual, fechaInicio, fechaFin, tipo_De_Cierre,
+        resultadoCompensacion, vacacion_Proporcional, Aguinaldo_proporcional,
+        indemnizacion, horas_Extra_Dia, horas_Extra_Noche, asueto_Extra,
+        descanso_trabajado_extra, total_Bruto, baseGravada,
+        cotizacionISSS, cotizacionAFP, totalNeto
+    });
+
+    if (!document.getElementById("btnPDF")) {
+        let btnPDF = document.createElement("button");
+        btnPDF.id = "btnPDF";
+        btnPDF.textContent = "Exportar a PDF";
+        btnPDF.onclick = () => window.print();
+        document.getElementById("resultado").after(btnPDF);
+    }
+
+    document.getElementById("resultado").scrollIntoView({ behavior: "smooth" });
+}
+</script>
+</body>
+</html>
