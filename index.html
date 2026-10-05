@@ -120,6 +120,18 @@ input.campo-error {
   display: none; 
 }
 
+.mensaje-aviso {
+  color: #92400e;
+  background-color: #fef3c7;
+  border-left: 4px solid #d97706;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 8px;
+  display: none;
+}
+
 /* Disposición de Fechas */
 .fila-fecha { 
   display: flex; 
@@ -254,6 +266,21 @@ button:focus-visible {
   outline: 4px solid #f59e0b;
   outline-offset: 2px;
 }
+
+button#btnLimpiar {
+  width: 100%;
+  padding: 16px;
+  font-size: 19px;
+  font-weight: 700;
+  color: #991b1b;
+  background-color: #ffffff;
+  border: 2px solid #dc2626;
+  border-radius: 10px;
+  margin-top: 14px;
+  cursor: pointer;
+}
+
+button#btnLimpiar:hover { background-color: #fef2f2; }
 
 /* Resumen del Resultado */
 #resultado { 
@@ -435,6 +462,7 @@ pre.codigo {
         <div><label for="anioFin">Año</label><input type="number" id="anioFin" placeholder="Ej: 2026" min="1950" max="2030"></div>
     </div>
     <div class="mensaje-error" id="error-fechaFin">Revise que el día, mes y año de finalización sean correctos.</div>
+    <div class="mensaje-aviso" id="aviso-periodo"></div>
 </div>
 
 <!-- PASO 2 -->
@@ -545,6 +573,7 @@ pre.codigo {
             <div><label for="horaFinTurno">Terminó a las</label><input type="time" id="horaFinTurno"></div>
         </div>
         <button type="button" class="boton-secundario" onclick="agregarTurno()">+ Agregar este turno</button>
+        <div class="mensaje-error" id="error-turno"></div>
         <div id="listaTurnos"></div>
     </div>
 
@@ -571,6 +600,7 @@ pre.codigo {
         <label for="anioAsueto">Año en que lo trabajó</label>
         <input type="number" id="anioAsueto" placeholder="Ej: 2020" min="1950" max="2030">
         <button type="button" class="boton-secundario" onclick="agregarAsueto()">+ Agregar este día</button>
+        <div class="mensaje-error" id="error-asueto"></div>
         <div id="listaAsuetos"></div>
     </div>
 
@@ -582,12 +612,14 @@ pre.codigo {
         <div><label for="anioDescanso">Año</label><input type="number" id="anioDescanso" placeholder="Ej: 2026" min="1950" max="2030"></div>
     </div>
     <button type="button" class="boton-secundario" onclick="agregarDescanso()">+ Agregar esta fecha</button>
+    <div class="mensaje-error" id="error-descanso"></div>
     <div id="listaDescansos"></div>
 </div>
 
 
 
 <button id="btnCalcular" onclick="calcular()">Calcular mi liquidación</button>
+<button type="button" id="btnLimpiar" onclick="limpiarTodo()">Limpiar todos los campos</button>
 
 <div id="resultado"></div>
 
@@ -634,6 +666,47 @@ function toggleAsueto() {
     document.getElementById("bloqueAsueto").style.display = document.getElementById("trabajoAsueto").checked ? "block" : "none";
 }
 
+/** Devuelve el formulario a su estado inicial: campos vacíos, listas vacías y sin resultado. */
+function limpiarTodo() {
+    if (!confirm("¿Desea borrar todos los datos que escribió? Esta acción no se puede deshacer.")) return;
+
+    document.querySelectorAll('input[type="number"], input[type="text"], input[type="time"]').forEach(i => i.value = "");
+    document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+    document.getElementById("sectorEconomico").value = "comercio";
+    document.getElementById("tipoCargo").value = "general";
+    document.getElementById("nombreAsueto").selectedIndex = 0;
+
+    let radioDespido = document.querySelector('input[name="tipoCierre"][value="Despido"]');
+    radioDespido.checked = true;
+    marcarOpcion(radioDespido);
+    document.getElementById("informoSi").checked = true;
+    toggleDetalleAviso();
+    toggleVacaciones();
+    toggleHorasExtra();
+    toggleAsueto();
+
+    reiniciarMarcasFecha();
+    turnos = [];
+    asuetosTrabajados = [];
+    descansosTrabajados = [];
+    renderTurnos();
+    renderAsuetos();
+    renderDescansos();
+
+    document.querySelectorAll(".campo-error").forEach(c => c.classList.remove("campo-error"));
+    document.querySelectorAll(".mensaje-error").forEach(m => m.style.display = "none");
+    document.getElementById("error-fechaFin").textContent = "Revise que el día, mes y año de finalización sean correctos.";
+
+    let resultado = document.getElementById("resultado");
+    resultado.style.display = "none";
+    resultado.innerHTML = "";
+    document.getElementById("comprobanteImprimible").innerHTML = "";
+    let btnPDF = document.getElementById("btnPDF");
+    if (btnPDF) btnPDF.remove();
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
 function mostrarError(idCampo, idError, mostrar) {
     document.getElementById(idCampo).classList.toggle("campo-error", mostrar);
     document.getElementById(idError).style.display = mostrar ? "block" : "none";
@@ -664,6 +737,130 @@ function fechaFueraDeEmpleo(fecha) {
     return fecha < rango.inicio || fecha > rango.fin;
 }
 
+/* ================= MENSAJES EN LA PLANTILLA (campos en rojo) ================= */
+
+/** Pone en rojo los campos indicados y muestra el mensaje en el cuadro de la plantilla. */
+function marcarError(idsCampos, idMensaje, texto) {
+    idsCampos.forEach(id => document.getElementById(id).classList.add("campo-error"));
+    let div = document.getElementById(idMensaje);
+    div.textContent = texto;
+    div.style.display = "block";
+}
+function limpiarError(idsCampos, idMensaje) {
+    idsCampos.forEach(id => document.getElementById(id).classList.remove("campo-error"));
+    document.getElementById(idMensaje).style.display = "none";
+}
+
+const CAMPOS_TURNO = ["diaTurno", "mesTurno", "anioTurno", "horaInicioTurno", "horaFinTurno"];
+const CAMPOS_FECHA_TURNO = ["diaTurno", "mesTurno", "anioTurno"];
+const CAMPOS_ASUETO = ["anioAsueto"];
+const CAMPOS_DESCANSO = ["diaDescanso", "mesDescanso", "anioDescanso"];
+[[CAMPOS_TURNO, "error-turno"], [CAMPOS_ASUETO, "error-asueto"], [CAMPOS_DESCANSO, "error-descanso"]].forEach(([campos, msg]) => {
+    campos.forEach(id => document.getElementById(id).addEventListener("input", () => limpiarError(campos, msg)));
+});
+
+/* ================= COHERENCIA DE FECHAS (ingreso ≤ terminación) ================= */
+
+const NOMBRES_FECHA = { Inicio: "de ingreso", Fin: "de terminación", Vacacion: "de las últimas vacaciones" };
+const MENSAJE_FECHA = { Inicio: "error-fechaInicio", Fin: "error-fechaFin", Vacacion: "error-fechaVacacion" };
+const ANIO_MIN = 1950, ANIO_MAX = 2030;
+const MENSAJES_FECHA_BASE = {};
+Object.keys(MENSAJE_FECHA).forEach(suf => MENSAJES_FECHA_BASE[suf] = document.getElementById(MENSAJE_FECHA[suf]).textContent);
+let marcasFecha = { Inicio: false, Fin: false, Vacacion: false };
+
+/** Lee los tres campos (día, mes, año) de una fecha. completa = los tres tienen valor; valida = existe en el calendario. */
+function leerFechaCampos(suf) {
+    let d = parseInt(document.getElementById("dia" + suf).value);
+    let m = parseInt(document.getElementById("mes" + suf).value);
+    let a = parseInt(document.getElementById("anio" + suf).value);
+    let completa = !!(d && m && a);
+    let valida = completa && validarFecha(d, m, a);
+    return { completa, valida, anio: a, fecha: valida ? new Date(a, m - 1, d) : null };
+}
+
+/** Muestra (o quita) el rojo y el mensaje de una fecha. Solo quita lo que esta validación puso. */
+function aplicarMarcaFecha(suf, mensaje, rojo) {
+    let ids = ["dia" + suf, "mes" + suf, "anio" + suf];
+    let div = document.getElementById(MENSAJE_FECHA[suf]);
+    if (rojo) {
+        ids.forEach(id => document.getElementById(id).classList.add("campo-error"));
+        if (mensaje) { div.textContent = mensaje; div.style.display = "block"; }
+        marcasFecha[suf] = true;
+    } else if (marcasFecha[suf]) {
+        ids.forEach(id => document.getElementById(id).classList.remove("campo-error"));
+        div.style.display = "none";
+        div.textContent = MENSAJES_FECHA_BASE[suf];
+        marcasFecha[suf] = false;
+    }
+}
+
+function reiniciarMarcasFecha() {
+    Object.keys(marcasFecha).forEach(suf => {
+        document.getElementById(MENSAJE_FECHA[suf]).textContent = MENSAJES_FECHA_BASE[suf];
+        marcasFecha[suf] = false;
+    });
+}
+
+/** Revisa que las fechas existan, estén en rango y que ingreso ≤ terminación. Devuelve true si todo es coherente. */
+function revisarFechas() {
+    let usaVacacion = !document.getElementById("nuncaVacaciones").checked;
+    let sufijos = usaVacacion ? ["Inicio", "Fin", "Vacacion"] : ["Inicio", "Fin"];
+    let lec = {}, errores = {};
+    sufijos.forEach(suf => {
+        let f = lec[suf] = leerFechaCampos(suf);
+        if (!f.completa) return;
+        if (!f.valida) errores[suf] = `La fecha ${NOMBRES_FECHA[suf]} no existe en el calendario (por ejemplo, 31 de abril o 30 de febrero). Revise el día y el mes.`;
+        else if (f.anio < ANIO_MIN || f.anio > ANIO_MAX) errores[suf] = `El año de la fecha ${NOMBRES_FECHA[suf]} debe estar entre ${ANIO_MIN} y ${ANIO_MAX}.`;
+    });
+
+    let ini = lec.Inicio, fin = lec.Fin;
+    let rangoBueno = ini.valida && fin.valida && !errores.Inicio && !errores.Fin;
+    let ordenInvalido = rangoBueno && fin.fecha < ini.fecha;
+    if (ordenInvalido) {
+        errores.Fin = `La fecha de terminación (${fechaLarga(fin.fecha)}) no puede ser anterior a la fecha de ingreso (${fechaLarga(ini.fecha)}). Corrija una de las dos fechas.`;
+    }
+    if (usaVacacion && rangoBueno && !ordenInvalido && lec.Vacacion.valida && !errores.Vacacion &&
+        (lec.Vacacion.fecha < ini.fecha || lec.Vacacion.fecha > fin.fecha)) {
+        errores.Vacacion = `La fecha de las últimas vacaciones (${fechaLarga(lec.Vacacion.fecha)}) debe estar entre el ingreso (${fechaLarga(ini.fecha)}) y la terminación (${fechaLarga(fin.fecha)}).`;
+    }
+
+    aplicarMarcaFecha("Inicio", errores.Inicio, !!errores.Inicio || ordenInvalido);
+    aplicarMarcaFecha("Fin", errores.Fin, !!errores.Fin);
+    if (usaVacacion) aplicarMarcaFecha("Vacacion", errores.Vacacion, !!errores.Vacacion);
+    else aplicarMarcaFecha("Vacacion", null, false);
+
+    revisarPeriodoItems();
+    return Object.keys(errores).length === 0;
+}
+
+function contarElementosFuera(rango) {
+    let diaDe = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    let fuera = f => f && (f < rango.inicio || f > rango.fin);
+    return turnos.filter(t => fuera(diaDe(t.inicio))).length
+        + asuetosTrabajados.filter(a => fuera(a.fecha)).length
+        + descansosTrabajados.filter(d => fuera(d.fecha)).length;
+}
+
+/** Aviso (no bloquea) si hay turnos, festivos o descansos agregados que quedaron fuera del periodo del Paso 1. */
+function revisarPeriodoItems() {
+    let div = document.getElementById("aviso-periodo");
+    let rango = obtenerRangoEmpleo();
+    let n = rango && rango.inicio <= rango.fin ? contarElementosFuera(rango) : 0;
+    if (n > 0) {
+        div.textContent = `Atención: ${n} elemento(s) del Paso 5 (turnos, días festivos o descansos) quedaron fuera del periodo trabajado. Quítelos con el botón "Quitar" o corrija las fechas.`;
+        div.style.display = "block";
+    } else {
+        div.style.display = "none";
+    }
+}
+
+["Inicio", "Fin", "Vacacion"].forEach(suf => {
+    ["dia", "mes", "anio"].forEach(p => {
+        document.getElementById(p + suf).addEventListener("change", revisarFechas);
+    });
+});
+document.getElementById("nuncaVacaciones").addEventListener("change", revisarFechas);
+
 // Mes (0-indexado) y día de cada asueto de fecha fija. El índice coincide con el value del <select>.
 const ASUETOS_FIJOS = [
     { nombre: "Año Nuevo", mes: 0, dia: 1 },
@@ -681,7 +878,7 @@ let asuetosTrabajados = []; // { nombre, fecha: Date|null (null = Semana Santa) 
 function agregarAsueto() {
     let valor = document.getElementById("nombreAsueto").value;
     let anio = parseInt(document.getElementById("anioAsueto").value);
-    if (!anio) { alert("Escriba el año en que trabajó ese día festivo."); return; }
+    if (!anio) { marcarError(CAMPOS_ASUETO, "error-asueto", "Escriba el año en que trabajó ese día festivo."); return; }
     let entrada;
     if (valor === "semana_santa") {
         entrada = { nombre: "Semana Santa " + anio, fecha: null };
@@ -690,9 +887,10 @@ function agregarAsueto() {
         entrada = { nombre: info.nombre + " " + anio, fecha: new Date(anio, info.mes, info.dia) };
     }
     if (fechaFueraDeEmpleo(entrada.fecha)) {
-        alert("Esa fecha cae fuera del periodo que trabajó ahí (entre su fecha de ingreso y de terminación del Paso 1). Revise el año que escribió.");
+        marcarError(CAMPOS_ASUETO, "error-asueto", "Esa fecha cae fuera del periodo que trabajó ahí (entre su fecha de ingreso y de terminación del Paso 1). Revise el año que escribió.");
         return;
     }
+    limpiarError(CAMPOS_ASUETO, "error-asueto");
     asuetosTrabajados.push(entrada);
     renderAsuetos();
     document.getElementById("anioAsueto").value = "";
@@ -707,6 +905,7 @@ function renderAsuetos() {
         div.innerHTML = `<span>${a.nombre}</span><button type="button" onclick="quitarAsueto(${i})">Quitar</button>`;
         cont.appendChild(div);
     });
+    revisarPeriodoItems();
 }
 
 let descansosTrabajados = []; // { fecha: Date }
@@ -715,12 +914,13 @@ function agregarDescanso() {
     let dia = parseInt(document.getElementById("diaDescanso").value);
     let mes = parseInt(document.getElementById("mesDescanso").value);
     let anio = parseInt(document.getElementById("anioDescanso").value);
-    if (!validarFecha(dia, mes, anio)) { alert("Revise la fecha antes de agregarla."); return; }
+    if (!validarFecha(dia, mes, anio)) { marcarError(CAMPOS_DESCANSO, "error-descanso", "Revise la fecha antes de agregarla: el día, mes y año deben formar una fecha que exista."); return; }
     let fechaNueva = new Date(anio, mes - 1, dia);
     if (fechaFueraDeEmpleo(fechaNueva)) {
-        alert("Esa fecha cae fuera del periodo que trabajó ahí (entre su fecha de ingreso y de terminación del Paso 1). Revise la fecha.");
+        marcarError(CAMPOS_DESCANSO, "error-descanso", "Esa fecha cae fuera del periodo que trabajó ahí (entre su fecha de ingreso y de terminación del Paso 1). Revise la fecha.");
         return;
     }
+    limpiarError(CAMPOS_DESCANSO, "error-descanso");
     descansosTrabajados.push({ fecha: fechaNueva });
     renderDescansos();
     document.getElementById("diaDescanso").value = "";
@@ -737,6 +937,7 @@ function renderDescansos() {
         div.innerHTML = `<span>${d.fecha.toLocaleDateString("es-SV")}</span><button type="button" onclick="quitarDescanso(${i})">Quitar</button>`;
         cont.appendChild(div);
     });
+    revisarPeriodoItems();
 }
 
 /** Agrega un turno de horas extra. Si la hora de fin es menor o igual a la de inicio, se asume que cruza la medianoche. */
@@ -748,7 +949,7 @@ function agregarTurno() {
     let horaFin = document.getElementById("horaFinTurno").value;
 
     if (!validarFecha(dia, mes, anio) || !horaInicio || !horaFin) {
-        alert("Revise la fecha y las horas del turno antes de agregarlo.");
+        marcarError(CAMPOS_TURNO, "error-turno", "Revise la fecha y las horas del turno antes de agregarlo.");
         return;
     }
     let [hI, mI] = horaInicio.split(":").map(Number);
@@ -758,10 +959,11 @@ function agregarTurno() {
     if (fin <= inicio) fin.setDate(fin.getDate() + 1);
 
     if (fechaFueraDeEmpleo(inicio)) {
-        alert("Esa fecha cae fuera del periodo que trabajó ahí (entre su fecha de ingreso y de terminación del Paso 1). Revise la fecha del turno.");
+        marcarError(CAMPOS_FECHA_TURNO, "error-turno", "Esa fecha cae fuera del periodo que trabajó ahí (entre su fecha de ingreso y de terminación del Paso 1). Revise la fecha del turno.");
         return;
     }
 
+    limpiarError(CAMPOS_TURNO, "error-turno");
     turnos.push({ inicio, fin });
     renderTurnos();
     ["diaTurno", "mesTurno", "anioTurno", "horaInicioTurno", "horaFinTurno"].forEach(id => document.getElementById(id).value = "");
@@ -778,6 +980,7 @@ function renderTurnos() {
             <button type="button" onclick="quitarTurno(${i})">Quitar</button>`;
         cont.appendChild(div);
     });
+    revisarPeriodoItems();
 }
 
 //#seg clasificar_fn
@@ -1168,6 +1371,12 @@ document.addEventListener("keydown", e => {
 /* ================= CÁLCULO PRINCIPAL ================= */
 
 function calcular() {
+    if (!revisarFechas()) {
+        document.getElementById("resultado").style.display = "none";
+        let primero = document.querySelector(".campo-error");
+        if (primero) primero.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+    }
     let huboError = false;
 
     let ingreso_Mensual = parseFloat(document.getElementById("ingresoMensual").value);
